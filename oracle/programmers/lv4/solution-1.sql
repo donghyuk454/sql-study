@@ -1,0 +1,41 @@
+-- https://school.programmers.co.kr/learn/courses/30/lessons/144856
+
+WITH BS AS (
+    SELECT
+        BOOK_ID,
+        SALES,
+        SALES_DATE
+    FROM
+        BOOK_SALES
+    WHERE
+        TO_CHAR(SALES_DATE, 'YYYY') = '2022'
+    AND TO_CHAR(SALES_DATE, 'MM') = '01'
+), JT AS (
+    SELECT 
+        BOOK.BOOK_ID,
+        BOOK.CATEGORY,
+        BOOK.AUTHOR_ID,
+        BS.SALES * BOOK.PRICE AS SALES
+    FROM
+        BS
+    JOIN
+        BOOK
+    ON BOOK.BOOK_ID = BS.BOOK_ID
+),
+JT_B AS (
+    SELECT
+        AUTHOR_ID,
+        CATEGORY,
+        SUM(SALES) AS TOTAL_SALES
+    FROM JT
+    GROUP BY AUTHOR_ID, CATEGORY
+)
+
+SELECT 
+    J.AUTHOR_ID,
+    A.AUTHOR_NAME,
+    J.CATEGORY,
+    J.TOTAL_SALES
+FROM JT_B J
+JOIN AUTHOR A ON A.AUTHOR_ID = J.AUTHOR_ID
+ORDER BY J.AUTHOR_ID, J.CATEGORY DESC;
