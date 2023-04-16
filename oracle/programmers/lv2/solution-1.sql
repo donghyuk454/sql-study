@@ -1,0 +1,16 @@
+-- https://school.programmers.co.kr/learn/courses/30/lessons/157342
+
+SELECT  CAR_ID
+       ,AVERAGE_DURATION
+FROM (
+    SELECT  CAR_ID, 
+            ROUND(SUM(TRUNC(END_DATE) - TRUNC(START_DATE)+1)/COUNT(CAR_ID), 1) AS AVERAGE_DURATION
+    FROM    CAR_RENTAL_COMPANY_RENTAL_HISTORY
+    GROUP BY 
+        CAR_ID
+    ORDER BY
+        AVERAGE_DURATION DESC,
+        CAR_ID  DESC
+)
+WHERE   AVERAGE_DURATION >= 7
+;
